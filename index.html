@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rifas Gatunas 🐾</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Lora:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --cream:#FFF8F0;--peach:#FFE4CC;--orange:#FF8C42;--orange-dark:#E06B1F;
+  --brown:#5C3317;--brown-light:#8B5A2B;--green:#5A9E6F;--green-light:#EAF5EE;
+  --red:#E05555;--red-light:#FDEAEA;--gray:#888;--border:#E8D5C0;
+  --shadow:0 2px 12px rgba(92,51,23,0.10);--radius:14px;
+  --blue:#2563EB;--blue-light:#EEF4FF;
+}
+body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--brown);min-height:100vh}
+#app{max-width:920px;margin:0 auto;padding:16px}
+.header{text-align:center;padding:24px 16px 18px;background:white;border-radius:var(--radius);border:1.5px solid var(--border);margin-bottom:18px;box-shadow:var(--shadow)}
+.header h1{font-family:'Lora',serif;font-size:1.9rem;color:var(--orange-dark);margin-bottom:3px}
+.header p{color:var(--brown-light);font-size:.9rem}
+.tabs{display:flex;gap:8px;margin-bottom:18px}
+.tab{flex:1;padding:10px;border:1.5px solid var(--border);background:white;border-radius:10px;font-family:'Nunito',sans-serif;font-size:.88rem;font-weight:700;color:var(--brown-light);cursor:pointer;transition:all .2s}
+.tab.active{background:var(--orange);border-color:var(--orange);color:white}
+.tab:hover:not(.active){background:var(--peach)}
+.card{background:white;border:1.5px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:14px;box-shadow:var(--shadow)}
+.card h2{font-family:'Lora',serif;font-size:1.15rem;color:var(--orange-dark);margin-bottom:14px}
+label{display:block;font-size:.8rem;font-weight:700;color:var(--brown-light);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+input,select,textarea{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:'Nunito',sans-serif;font-size:.93rem;color:var(--brown);background:var(--cream);outline:none;transition:border .2s}
+input:focus,select:focus,textarea:focus{border-color:var(--orange)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.form-group{margin-bottom:12px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border:none;border-radius:10px;font-family:'Nunito',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-primary{background:var(--orange);color:white}
+.btn-primary:hover{background:var(--orange-dark)}
+.btn-secondary{background:var(--peach);color:var(--brown);border:1.5px solid var(--border)}
+.btn-secondary:hover{background:var(--border)}
+.btn-success{background:var(--green);color:white}
+.btn-admin{background:var(--blue-light);color:var(--blue);border:1.5px solid #B5D4F4}
+.btn-admin:hover{background:#DBEAFE}
+.btn-sm{padding:5px 11px;font-size:.8rem}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-full{width:100%;justify-content:center;padding:12px}
+.hidden{display:none}
+.rifa-card{background:white;border:1.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;box-shadow:var(--shadow)}
+.rifa-card h3{font-size:.98rem;font-weight:700;color:var(--brown);margin-bottom:3px}
+.rifa-card p{font-size:.8rem;color:var(--gray)}
+.rifa-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.link-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;margin-top:6px}
+.link-box{background:var(--cream);border:1.5px dashed var(--border);border-radius:8px;padding:7px 10px;font-size:.75rem;color:var(--brown-light);word-break:break-all;cursor:pointer;transition:background .2s}
+.link-box:hover{background:var(--peach)}
+.link-box.admin-link{border-color:#B5D4F4;background:var(--blue-light);color:var(--blue)}
+.link-box.admin-link:hover{background:#DBEAFE}
+.rifa-header-view{background:white;border:1.5px solid var(--border);border-radius:var(--radius);padding:14px 18px;margin-bottom:14px;box-shadow:var(--shadow)}
+.rifa-title-view{font-family:'Lora',serif;font-size:1.4rem;color:var(--orange-dark)}
+.rifa-meta{display:flex;gap:8px;margin-top:7px;flex-wrap:wrap}
+.badge{border-radius:20px;padding:3px 11px;font-size:.78rem;font-weight:700}
+.badge-peach{background:var(--peach);color:var(--brown-light);border:1px solid var(--border)}
+.badge-green{background:var(--green-light);color:var(--green)}
+.badge-red{background:var(--red-light);color:var(--red)}
+.badge-blue{background:var(--blue-light);color:var(--blue)}
+.nums-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(50px,1fr));gap:5px;margin-bottom:14px}
+.num-btn{aspect-ratio:1;border-radius:9px;font-family:'Nunito',sans-serif;font-weight:800;font-size:.87rem;cursor:pointer;border:2px solid transparent;transition:all .15s;display:flex;align-items:center;justify-content:center}
+.num-btn.libre{background:white;border-color:var(--border);color:var(--brown-light)}
+.num-btn.libre:hover{background:var(--peach);border-color:var(--orange);color:var(--orange-dark)}
+.num-btn.seleccionado{background:var(--orange);border-color:var(--orange-dark);color:white;transform:scale(1.06)}
+.num-btn.vendido{background:var(--red-light);border-color:var(--red);color:var(--red);cursor:not-allowed}
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:.78rem;color:var(--brown-light)}
+.leg-dot{width:13px;height:13px;border-radius:3px;border:2px solid}
+.progress-wrap{background:var(--peach);border-radius:20px;height:7px;overflow:hidden;margin-top:8px}
+.progress-bar{height:100%;background:var(--orange);border-radius:20px;transition:width .4s}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.stat-box{background:var(--cream);border:1px solid var(--border);border-radius:10px;padding:11px;text-align:center}
+.stat-num{font-size:1.4rem;font-weight:800;color:var(--orange-dark)}
+.stat-label{font-size:.72rem;color:var(--gray);font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.83rem}
+th{background:var(--peach);color:var(--brown-light);font-weight:700;padding:7px 9px;text-align:left;font-size:.76rem;text-transform:uppercase;letter-spacing:.4px}
+td{padding:7px 9px;border-bottom:1px solid var(--border);color:var(--brown)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--cream)}
+.alert{padding:9px 13px;border-radius:8px;font-size:.86rem;margin-bottom:11px;display:flex;align-items:flex-start;gap:7px}
+.alert-success{background:var(--green-light);color:var(--green);border:1px solid #9FE1CB}
+.alert-error{background:var(--red-light);color:var(--red);border:1px solid #F7C1C1}
+.alert-info{background:var(--blue-light);color:var(--blue);border:1px solid #B5D4F4}
+.empty-state{text-align:center;padding:36px 20px;color:var(--gray)}
+.empty-state .icon{font-size:2.8rem;margin-bottom:10px}
+.spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.35);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle}
+.spinner-dark{border-color:rgba(92,51,23,.15);border-top-color:var(--brown)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.modal-overlay{position:fixed;inset:0;background:rgba(92,51,23,.45);display:flex;align-items:center;justify-content:center;z-index:300;padding:16px}
+.modal{background:white;border-radius:var(--radius);padding:22px;max-width:430px;width:100%;border:1.5px solid var(--border);box-shadow:0 8px 40px rgba(92,51,23,.22);max-height:92vh;overflow-y:auto}
+.modal h3{font-family:'Lora',serif;color:var(--orange-dark);margin-bottom:14px;font-size:1.15rem}
+.export-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+.db-status{position:fixed;bottom:14px;right:14px;background:white;border:1.5px solid var(--border);border-radius:20px;padding:5px 14px;font-size:.75rem;font-weight:700;box-shadow:var(--shadow);display:flex;align-items:center;gap:6px;z-index:100}
+.dot{width:8px;height:8px;border-radius:50%;background:#F59E0B;transition:background .3s}
+.dot.green{background:var(--green)}
+.dot.red{background:var(--red)}
+.loading-full{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:14px}
+.loading-full p{color:var(--brown-light);font-size:.92rem}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div class="loading-full" id="loading-screen">
+    <div style="font-size:3rem">🐾</div>
+    <span class="spinner spinner-dark"></span>
+    <p>Conectando con Firebase...</p>
+  </div>
+  <div id="main" class="hidden"></div>
+</div>
+
+<!-- Indicador de conexión -->
+<div class="db-status">
+  <div class="dot" id="db-dot"></div>
+  <span id="db-label">Conectando...</span>
+</div>
+
+<!-- ÚNICO MODAL: Comprador -->
+<div id="modal-comprador" class="modal-overlay hidden">
+  <div class="modal">
+    <h3>🐾 Confirmar números</h3>
+    <p style="font-size:.86rem;color:var(--brown-light);margin-bottom:14px">
+      Números: <strong id="modal-nums" style="color:var(--orange-dark)"></strong>
+    </p>
+    <div class="form-group">
+      <label>Nombre completo *</label>
+      <input type="text" id="comp-nombre" placeholder="Tu nombre completo">
+    </div>
+    <div class="form-group">
+      <label>Teléfono / WhatsApp *</label>
+      <input type="text" id="comp-tel" placeholder="+51 999 999 999">
+    </div>
+    <div class="form-group">
+      <label>¿Quién te contactó?</label>
+      <input type="text" id="comp-vendedor" placeholder="Nombre del vendedor">
+    </div>
+    <div id="modal-alert"></div>
+    <div style="display:flex;gap:9px;margin-top:4px">
+      <button class="btn btn-secondary" style="flex:1;justify-content:center" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn btn-success"   style="flex:1;justify-content:center" id="btn-confirmar" onclick="confirmarCompra()">✅ Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script>
+
+/* ── CONFIG FIREBASE ── */
+const firebaseConfig = {
+  apiKey:            "AIzaSyAf110xeId0Bx_9hx0_WmNuD8iAEH7e4fg",
+  authDomain:        "rifa-de-gatitos.firebaseapp.com",
+  databaseURL:       "https://rifa-de-gatitos-default-rtdb.firebaseio.com",
+  projectId:         "rifa-de-gatitos",
+  storageBucket:     "rifa-de-gatitos.firebasestorage.app",
+  messagingSenderId: "6723089100",
+  appId:             "1:6723089100:web:755f1009f93d290539c869"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+/* ── ESTADO ── */
+let currentRifaId = null;
+let selectedNums  = [];
+let unsubscribe   = null;
+
+/* ── DB STATUS UI ── */
+function dbOk()   { document.getElementById('db-dot').className='dot green'; document.getElementById('db-label').textContent='Firebase ✓'; }
+function dbErr()  { document.getElementById('db-dot').className='dot red';   document.getElementById('db-label').textContent='Sin conexión'; }
+function dbWait() { document.getElementById('db-dot').className='dot';       document.getElementById('db-label').textContent='Conectando...'; }
+
+/* ── FIREBASE OPS ── */
+function genId(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+async function dbGetAll(){ const s=await db.ref('rifas').once('value'); return s.exists()?s.val():{}; }
+async function dbGet(id){ const s=await db.ref('rifas/'+id).once('value'); return s.exists()?s.val():null; }
+async function dbSet(rifa){ await db.ref('rifas/'+rifa.id).set(rifa); }
+async function dbPatchNums(id,nums){ await db.ref('rifas/'+id).update({numeros:nums}); }
+async function dbPushComp(id,c){ await db.ref('rifas/'+id+'/compradores').push(c); }
+function dbListen(id,cb){ if(unsubscribe){ unsubscribe(); unsubscribe=null; } const r=db.ref('rifas/'+id); r.on('value',s=>{ if(s.exists()) cb(s.val()); }); unsubscribe=()=>r.off('value'); }
+
+/* ── URL ── */
+function base(){ return location.href.split('?')[0]; }
+function pubLink(id){ return base()+'?rifa='+id; }
+function admLink(id){ return base()+'?rifa='+id+'&admin=1'; }
+
+/* ════════════════════════════
+   INIT
+════════════════════════════ */
+async function init(){
+  dbWait();
+  // Cerrar modal y limpiar estado siempre al iniciar
+  document.getElementById('modal-comprador').classList.add('hidden');
+  currentRifaId = null;
+  selectedNums  = [];
+
+  try{ await db.ref('.info/serverTimeOffset').once('value'); dbOk(); } catch(e){ dbErr(); }
+
+  document.getElementById('loading-screen').classList.add('hidden');
+  document.getElementById('main').classList.remove('hidden');
+
+  const p      = new URLSearchParams(location.search);
+  const rifaId = p.get('rifa');
+  const isAdm  = p.get('admin')==='1';
+
+  renderShell();
+
+  if(rifaId){
+    const rifa = await dbGet(rifaId);
+    if(rifa){
+      hideNav();
+      isAdm ? abrirAdmin(rifaId) : abrirPublica(rifaId);
+      return;
+    }
+    history.replaceState(null,'',location.pathname);
+    toast('Ese link de rifa ya no existe.','error');
+  }
+  renderLista();
+}
+
+/* ════════════════════════════
+   SHELL
+════════════════════════════ */
+function renderShell(){
+  document.getElementById('main').innerHTML=`
+    <div class="header">
+      <h1>🐾 Rifas Gatunas 🐾</h1>
+      <p>Sistema de rifas benéficas para gatitos callejeros 🐱</p>
+    </div>
+    <div class="tabs" id="nav">
+      <button class="tab active" id="btn-lista" onclick="switchTab('lista')">🎟️ Mis Rifas</button>
+      <button class="tab"        id="btn-crear" onclick="switchTab('crear')">➕ Crear Rifa</button>
+    </div>
+    <div id="tab-lista"></div>
+    <div id="tab-crear" class="hidden">
+      <div class="card">
+        <h2>🎉 Nueva Rifa</h2>
+        <div class="form-row">
+          <div class="form-group"><label>Nombre *</label><input id="f-nom" type="text" placeholder="Ej: Rifa Junio 2025"></div>
+          <div class="form-group"><label>Precio por número *</label><input id="f-pre" type="number" min="0" placeholder="Ej: 10"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Cantidad de números *</label><input id="f-can" type="number" value="150" min="10" max="300"></div>
+          <div class="form-group"><label>Moneda</label>
+            <select id="f-mon">
+              <option value="S/">S/ (Soles)</option>
+              <option value="$">$ (USD)</option>
+              <option value="€">€ (EUR)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group"><label>Descripción / Premio</label><textarea id="f-des" rows="2" placeholder="Premio o motivo..."></textarea></div>
+        <div class="form-group"><label>Fecha del sorteo</label><input id="f-fec" type="date"></div>
+        <div id="crear-alert"></div>
+        <button class="btn btn-primary btn-full" onclick="crearRifa()">🎟️ Crear Rifa</button>
+      </div>
+    </div>
+    <div id="rifa-view"></div>`;
+}
+
+function switchTab(t){
+  ['lista','crear'].forEach(x=>{
+    document.getElementById('tab-'+x).classList.toggle('hidden',x!==t);
+    document.getElementById('btn-'+x).classList.toggle('active',x===t);
+  });
+  if(t==='lista') renderLista();
+};
+
+function showNav(){ const n=document.getElementById('nav'); if(n) n.classList.remove('hidden'); }
+function hideNav(){ const n=document.getElementById('nav'); if(n) n.classList.add('hidden'); }
+function clearView(){ const v=document.getElementById('rifa-view'); if(v) v.innerHTML=''; clearTabs(); }
+function clearTabs(){ ['tab-lista','tab-crear'].forEach(x=>{ const e=document.getElementById(x); if(e) e.classList.add('hidden'); }); }
+
+/* ════════════════════════════
+   LISTA
+════════════════════════════ */
+async function renderLista(){
+  showNav(); clearView();
+  const c=document.getElementById('tab-lista');
+  c.classList.remove('hidden');
+  c.innerHTML=`<div class="empty-state"><span class="spinner spinner-dark"></span></div>`;
+
+  let rifas={};
+  try{ rifas=await dbGetAll(); dbOk(); }
+  catch(e){ dbErr(); c.innerHTML=`<div class="alert alert-error">⚠️ No se pudo conectar con Firebase.<br><strong>Verifica las reglas de la base de datos</strong> (deben estar en modo público de prueba).</div>`; return; }
+
+  const ids=Object.keys(rifas);
+  if(!ids.length){
+    c.innerHTML=`<div class="empty-state"><div class="icon">🐱</div><p>No hay rifas aún.</p><p style="margin-top:7px;font-size:.85rem">¡Crea tu primera rifa!</p></div>`;
+    return;
+  }
+
+  c.innerHTML = ids.map(id=>{
+    const r=rifas[id];
+    const v=contarV(r), pct=Math.round(v/r.cantidad*100);
+    return `<div class="rifa-card">
+      <div>
+        <h3>🎟️ ${r.nombre}</h3>
+        <p>${r.moneda}${r.precio}/número &nbsp;·&nbsp; ${v}/${r.cantidad} vendidos &nbsp;·&nbsp; ${r.fecha||'Sin fecha'}</p>
+        <div class="progress-wrap" style="margin-top:6px"><div class="progress-bar" style="width:${pct}%"></div></div>
+      </div>
+      <div style="margin-top:12px">
+        <p style="font-size:.72rem;font-weight:700;color:var(--brown-light);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">🌐 Link público</p>
+        <div class="link-row">
+          <div class="link-box" onclick="copyTxt('${pubLink(id)}')">${pubLink(id)}</div>
+          <button class="btn btn-secondary btn-sm" onclick="copyTxt('${pubLink(id)}')">Copiar</button>
+        </div>
+        <p style="font-size:.72rem;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.4px;margin-top:8px;margin-bottom:4px">🔐 Link admin</p>
+        <div class="link-row">
+          <div class="link-box admin-link" onclick="copyTxt('${admLink(id)}')">${admLink(id)}</div>
+          <button class="btn btn-admin btn-sm" onclick="copyTxt('${admLink(id)}')">Copiar</button>
+        </div>
+      </div>
+      <div class="rifa-actions">
+        <button class="btn btn-primary btn-sm" onclick="abrirPublica('${id}')">Ver pública</button>
+        <button class="btn btn-admin btn-sm"   onclick="abrirAdmin('${id}')">🔐 Panel admin</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ════════════════════════════
+   CREAR RIFA
+════════════════════════════ */
+async function crearRifa(){
+  const nombre  =document.getElementById('f-nom').value.trim();
+  const precio  =parseFloat(document.getElementById('f-pre').value);
+  const cantidad=parseInt(document.getElementById('f-can').value);
+  const moneda  =document.getElementById('f-mon').value;
+  const desc    =document.getElementById('f-des').value.trim();
+  const fecha   =document.getElementById('f-fec').value;
+  const al=document.getElementById('crear-alert');
+
+  if(!nombre||!precio||!cantidad){ al.innerHTML=`<div class="alert alert-error">⚠️ Completa los campos obligatorios.</div>`; return; }
+  if(cantidad<10||cantidad>300){   al.innerHTML=`<div class="alert alert-error">⚠️ Cantidad entre 10 y 300.</div>`; return; }
+
+  al.innerHTML=`<div class="alert alert-info"><span class="spinner spinner-dark"></span>&nbsp;Creando en Firebase...</div>`;
+
+  const id=genId(), numeros={};
+  for(let i=1;i<=cantidad;i++) numeros[i]={estado:'libre'};
+  const rifa={id,nombre,precio,moneda,cantidad,desc,fecha,creado:new Date().toISOString(),numeros,compradores:{}};
+
+  try{
+    await dbSet(rifa); dbOk();
+    al.innerHTML=`<div class="alert alert-success">✅ ¡Rifa creada!</div>`;
+    setTimeout(()=>{ al.innerHTML=''; switchTab('lista'); },1200);
+  } catch(e){ dbErr(); al.innerHTML=`<div class="alert alert-error">⚠️ Error: ${e.message}</div>`; }
+};
+
+/* ════════════════════════════
+   VISTA PÚBLICA
+════════════════════════════ */
+async function abrirPublica(id){
+  currentRifaId=id; selectedNums=[];
+  hideNav(); clearView();
+
+  let rifa;
+  try{ rifa=await dbGet(id); dbOk(); } catch(e){ dbErr(); toast('Error cargando rifa','error'); return; }
+  if(!rifa){ toast('Rifa no encontrada','error'); return; }
+
+  document.getElementById('rifa-view').innerHTML = htmlPub(rifa);
+  renderGrid(rifa);
+  setTimeout(()=>{ const s=document.getElementById('sync-tag'); if(s){ s.textContent='✅ En vivo'; dbOk(); } },800);
+
+  dbListen(id, r=>{ dbOk(); renderGrid(r); actualizarBadges(r); });
+};
+
+function htmlPub(rifa){
+  const v=contarV(rifa), pct=Math.round(v/rifa.cantidad*100);
+  return `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+      <button class="btn btn-secondary btn-sm" onclick="volverHome()">← Volver</button>
+      <span id="sync-tag" style="font-size:.78rem;color:var(--green);font-weight:700">🔄 Conectando...</span>
+    </div>
+    ${htmlRifaHead(rifa,v,pct)}
+    <div class="card">
+      <h2>🎲 Elige tus números</h2>
+      ${htmlLeyenda()}
+      <div class="nums-grid" id="nums-grid"></div>
+      <div id="sel-info" style="display:none;margin-bottom:11px">
+        <div class="alert alert-info">Seleccionados: <strong id="sel-list"></strong></div>
+      </div>
+      <button class="btn btn-primary btn-full" id="btn-reservar" onclick="abrirModal()" disabled>Reservar números seleccionados</button>
+    </div>`;
+}
+
+/* ════════════════════════════
+   PANEL ADMIN (sin contraseña)
+════════════════════════════ */
+async function abrirAdmin(id){
+  currentRifaId=id; selectedNums=[];
+  hideNav(); clearView();
+
+  let rifa;
+  try{ rifa=await dbGet(id); dbOk(); } catch(e){ dbErr(); toast('Error cargando rifa','error'); return; }
+  if(!rifa){ toast('Rifa no encontrada','error'); return; }
+
+  document.getElementById('rifa-view').innerHTML = htmlAdmin(rifa);
+  renderGrid(rifa); renderStats(rifa); renderCompradores(rifa);
+  setTimeout(()=>{ const s=document.getElementById('sync-tag'); if(s){ s.textContent='✅ En vivo'; dbOk(); } },800);
+
+  dbListen(id, r=>{ dbOk(); renderGrid(r); actualizarBadges(r); renderStats(r); renderCompradores(r); });
+};
+
+function htmlAdmin(rifa){
+  const id=rifa.id, v=contarV(rifa), pct=Math.round(v/rifa.cantidad*100);
+  return `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <button class="btn btn-secondary btn-sm" onclick="volverHome()">← Volver</button>
+        <span class="badge badge-blue">🔐 Panel Admin</span>
+      </div>
+      <span id="sync-tag" style="font-size:.78rem;color:var(--green);font-weight:700">🔄 Conectando...</span>
+    </div>
+    ${htmlRifaHead(rifa,v,pct)}
+    <div class="card">
+      <h2>🔗 Links</h2>
+      <p style="font-size:.72rem;font-weight:700;color:var(--brown-light);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">🌐 Link público</p>
+      <div class="link-row">
+        <div class="link-box" onclick="copyTxt('${pubLink(id)}')">${pubLink(id)}</div>
+        <button class="btn btn-secondary btn-sm" onclick="copyTxt('${pubLink(id)}')">Copiar</button>
+      </div>
+      <p style="font-size:.72rem;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.4px;margin-top:10px;margin-bottom:4px">🔐 Link admin</p>
+      <div class="link-row">
+        <div class="link-box admin-link" onclick="copyTxt('${admLink(id)}')">${admLink(id)}</div>
+        <button class="btn btn-admin btn-sm" onclick="copyTxt('${admLink(id)}')">Copiar</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2>🎲 Estado de números</h2>
+      ${htmlLeyenda()}
+      <div class="nums-grid" id="nums-grid"></div>
+      <div id="sel-info" style="display:none;margin-bottom:11px">
+        <div class="alert alert-info">Seleccionados: <strong id="sel-list"></strong></div>
+      </div>
+      <button class="btn btn-primary btn-full" id="btn-reservar" onclick="abrirModal()" disabled>Registrar venta manual</button>
+    </div>
+    <div class="card"><h2>📊 Estadísticas</h2><div class="stats-row" id="stats-row"></div></div>
+    <div class="card">
+      <h2>👥 Compradores</h2>
+      <div class="export-bar">
+        <button class="btn btn-success btn-sm" onclick="exportCSV()">⬇️ Exportar CSV</button>
+        <button class="btn btn-secondary btn-sm" onclick="exportJSON()">⬇️ Exportar JSON</button>
+        <span style="font-size:.76rem;color:var(--gray)">Solo visible en el panel admin 🔐</span>
+      </div>
+      <div id="compradores-tabla"></div>
+    </div>`;
+}
+
+/* ── HELPERS HTML ── */
+function htmlRifaHead(rifa,v,pct){
+  return `<div class="rifa-header-view">
+    <div class="rifa-title-view">🎟️ ${rifa.nombre}</div>
+    ${rifa.desc?`<p style="color:var(--brown-light);font-size:.85rem;margin-top:5px">${rifa.desc}</p>`:''}
+    <div class="rifa-meta">
+      <span class="badge badge-peach">${rifa.moneda}${rifa.precio}/número</span>
+      ${rifa.fecha?`<span class="badge badge-peach">📅 ${rifa.fecha}</span>`:''}
+      <span class="badge badge-green" id="badge-v">${v} vendidos</span>
+      <span class="badge badge-red"   id="badge-d">${rifa.cantidad-v} disponibles</span>
+    </div>
+    <div class="progress-wrap"><div class="progress-bar" id="prog-bar" style="width:${pct}%"></div></div>
+    <p style="font-size:.74rem;color:var(--gray);margin-top:3px" id="prog-txt">${pct}% vendido</p>
+  </div>`;
+}
+
+function htmlLeyenda(){
+  return `<div class="legend">
+    <div class="leg-item"><div class="leg-dot" style="background:white;border-color:var(--border)"></div>Libre</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--orange);border-color:var(--orange-dark)"></div>Tu selección</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--red-light);border-color:var(--red)"></div>Vendido</div>
+  </div>`;
+}
+
+/* ── GRID ── */
+function renderGrid(rifa){
+  const grid=document.getElementById('nums-grid'); if(!grid) return;
+  let html='';
+  for(let i=1;i<=rifa.cantidad;i++){
+    const n=rifa.numeros?rifa.numeros[i]:null;
+    const estado=n?n.estado:'libre';
+    let cls='num-btn ';
+    if(estado==='vendido')          cls+='vendido';
+    else if(selectedNums.includes(i)) cls+='seleccionado';
+    else                            cls+='libre';
+    html+=`<button class="${cls}" ${estado==='vendido'?'disabled':''} onclick="toggleNum(${i})">${i}</button>`;
+  }
+  grid.innerHTML=html; actualizarSel();
+}
+
+function toggleNum(n){
+  const i=selectedNums.indexOf(n);
+  if(i>-1) selectedNums.splice(i,1); else selectedNums.push(n);
+  selectedNums.sort((a,b)=>a-b);
+  dbGet(currentRifaId).then(r=>{ if(r) renderGrid(r); });
+};
+
+function actualizarSel(){
+  const info=document.getElementById('sel-info');
+  const list=document.getElementById('sel-list');
+  const btn =document.getElementById('btn-reservar');
+  if(!info) return;
+  if(selectedNums.length){ info.style.display='block'; if(list) list.textContent=selectedNums.join(', '); if(btn) btn.disabled=false; }
+  else{ info.style.display='none'; if(btn) btn.disabled=true; }
+}
+
+function actualizarBadges(rifa){
+  const v=contarV(rifa), pct=Math.round(v/rifa.cantidad*100);
+  const bv=document.getElementById('badge-v'); if(bv) bv.textContent=v+' vendidos';
+  const bd=document.getElementById('badge-d'); if(bd) bd.textContent=(rifa.cantidad-v)+' disponibles';
+  const pb=document.getElementById('prog-bar'); if(pb) pb.style.width=pct+'%';
+  const pt=document.getElementById('prog-txt'); if(pt) pt.textContent=pct+'% vendido';
+}
+
+function renderStats(rifa){
+  const row=document.getElementById('stats-row'); if(!row) return;
+  const v=contarV(rifa);
+  row.innerHTML=`
+    <div class="stat-box"><div class="stat-num">${v}</div><div class="stat-label">Vendidos</div></div>
+    <div class="stat-box"><div class="stat-num">${rifa.cantidad-v}</div><div class="stat-label">Disponibles</div></div>
+    <div class="stat-box"><div class="stat-num">${rifa.moneda}${(v*rifa.precio).toLocaleString()}</div><div class="stat-label">Recaudado</div></div>`;
+}
+
+function renderCompradores(rifa){
+  const el=document.getElementById('compradores-tabla'); if(!el) return;
+  const lista=Object.values(rifa.compradores||{});
+  if(!lista.length){ el.innerHTML='<p style="color:var(--gray);font-size:.86rem;text-align:center;padding:14px">Aún no hay compradores.</p>'; return; }
+  const rows=lista.slice().reverse().map(c=>`<tr>
+    <td>${c.nombre}</td><td>${c.telefono}</td><td>${c.vendedor||'-'}</td>
+    <td><strong style="color:var(--orange-dark)">${c.numeros}</strong></td>
+    <td style="font-size:.75rem;color:var(--gray)">${c.fecha}</td>
+  </tr>`).join('');
+  el.innerHTML=`<div class="table-wrap"><table>
+    <thead><tr><th>Nombre</th><th>Teléfono</th><th>Vendedor</th><th>Números</th><th>Fecha</th></tr></thead>
+    <tbody>${rows}</tbody></table></div>`;
+}
+
+/* ── MODAL ── */
+function abrirModal(){
+  if(!selectedNums.length) return;
+  document.getElementById('modal-nums').textContent=selectedNums.join(', ');
+  document.getElementById('modal-alert').innerHTML='';
+  ['comp-nombre','comp-tel','comp-vendedor'].forEach(f=>document.getElementById(f).value='');
+  document.getElementById('modal-comprador').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('comp-nombre').focus(),100);
+};
+
+function cerrarModal(){
+  document.getElementById('modal-comprador').classList.add('hidden');
+};
+
+async function confirmarCompra(){
+  const nombre  =document.getElementById('comp-nombre').value.trim();
+  const tel     =document.getElementById('comp-tel').value.trim();
+  const vendedor=document.getElementById('comp-vendedor').value.trim();
+  const al=document.getElementById('modal-alert');
+
+  if(!nombre||!tel){ al.innerHTML='<div class="alert alert-error">⚠️ Nombre y teléfono son obligatorios.</div>'; return; }
+
+  const btn=document.getElementById('btn-confirmar');
+  btn.disabled=true; btn.innerHTML='<span class="spinner"></span>&nbsp;Guardando...';
+
+  try{
+    const rifa=await dbGet(currentRifaId);
+    if(!rifa) throw new Error('Rifa no encontrada');
+
+    const ocupados=selectedNums.filter(n=>rifa.numeros[n]&&rifa.numeros[n].estado!=='libre');
+    if(ocupados.length){
+      al.innerHTML=`<div class="alert alert-error">⚠️ Los números ${ocupados.join(', ')} ya no están disponibles.</div>`;
+      selectedNums=selectedNums.filter(n=>!ocupados.includes(n));
+      renderGrid(rifa); btn.disabled=false; btn.textContent='✅ Confirmar'; return;
+    }
+
+    const nuevos={...rifa.numeros};
+    selectedNums.forEach(n=>{ nuevos[n]={estado:'vendido',nombre,telefono:tel,vendedor}; });
+    await dbPatchNums(currentRifaId,nuevos);
+
+    const fecha=new Date().toLocaleString('es-PE',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    await dbPushComp(currentRifaId,{nombre,telefono:tel,vendedor:vendedor||'No especificado',numeros:selectedNums.join(', '),fecha});
+
+    const ok=[...selectedNums]; selectedNums=[];
+    document.getElementById('modal-comprador').classList.add('hidden');
+    toast(`¡Números ${ok.join(', ')} reservados para ${nombre}! 🎉`,'success');
+    dbOk();
+  } catch(e){ al.innerHTML=`<div class="alert alert-error">⚠️ Error: ${e.message}</div>`; dbErr(); }
+
+  btn.disabled=false; btn.textContent='✅ Confirmar';
+};
+
+/* ── EXPORTAR ── */
+async function exportCSV(){
+  const rifa=await dbGet(currentRifaId); if(!rifa) return;
+  const lista=Object.values(rifa.compradores||{});
+  const rows=[['Nombre','Teléfono','Vendedor','Números','Fecha'],...lista.map(c=>[c.nombre,c.telefono,c.vendedor||'',`"${c.numeros}"`,c.fecha])];
+  const blob=new Blob(['\ufeff'+rows.map(r=>r.join(',')).join('\n')],{type:'text/csv;charset=utf-8'});
+  const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(blob),download:`compradores_${rifa.nombre.replace(/\s+/g,'_')}.csv`});
+  a.click(); toast('CSV descargado ✅','success');
+};
+
+async function exportJSON(){
+  const rifa=await dbGet(currentRifaId); if(!rifa) return;
+  const blob=new Blob([JSON.stringify({rifa:rifa.nombre,fecha:rifa.fecha,compradores:Object.values(rifa.compradores||{})},null,2)],{type:'application/json'});
+  const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(blob),download:`compradores_${rifa.nombre.replace(/\s+/g,'_')}.json`});
+  a.click(); toast('JSON descargado ✅','success');
+};
+
+/* ── UTILS ── */
+function contarV(rifa){ if(!rifa.numeros) return 0; return Object.values(rifa.numeros).filter(n=>n&&n.estado==='vendido').length; }
+
+function copyTxt(txt){
+  navigator.clipboard.writeText(txt).then(()=>toast('¡Link copiado!','success')).catch(()=>toast('No se pudo copiar','error'));
+};
+
+function volverHome(){
+  if(unsubscribe){ unsubscribe(); unsubscribe=null; }
+  currentRifaId=null; selectedNums=[];
+  renderShell(); renderLista();
+};
+
+function toast(msg,type){
+  const t=document.createElement('div');
+  t.className=`alert alert-${type}`;
+  t.style.cssText='position:fixed;top:18px;right:18px;z-index:999;max-width:340px;box-shadow:0 4px 20px rgba(0,0,0,.15)';
+  t.textContent=msg; document.body.appendChild(t);
+  setTimeout(()=>t.remove(),4500);
+}
+
+
+init();
+</script>
+
+</body>
+</html>
