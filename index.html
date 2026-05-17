@@ -193,6 +193,12 @@ function admLink(id){ return base()+'?rifa='+id+'&admin=1'; }
 ════════════════════════════ */
 async function init(){
   dbWait();
+
+  // Siempre cerrar el modal al iniciar, sin importar el estado anterior
+  document.getElementById('modal-comprador').classList.add('hidden');
+  currentRifaId = null;
+  selectedNums  = [];
+
   try{ await get(ref(db,'.info/serverTimeOffset')); dbOk(); } catch(e){ dbErr(); }
 
   document.getElementById('loading-screen').classList.add('hidden');
@@ -211,7 +217,9 @@ async function init(){
       isAdm ? abrirAdmin(rifaId) : abrirPublica(rifaId);
       return;
     }
-    toast('Rifa no encontrada','error');
+    // Rifa no existe: limpiar URL y volver al home
+    history.replaceState(null,'',location.pathname);
+    toast('Esa rifa ya no existe o el link es incorrecto.','error');
   }
   renderLista();
 }
